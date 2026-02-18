@@ -4,19 +4,19 @@ const socialLinks = [
   {
     name: "LinkedIn",
     icon: Linkedin,
-    href: "https://linkedin.com",
+    href: "https://www.linkedin.com/in/andr%C3%A9-andrade-45bb9a13a/",
     description: "Artigos e atualizações jurídicas",
   },
   {
     name: "Instagram",
     icon: Instagram,
-    href: "https://instagram.com",
+    href: "https://www.instagram.com/dr_andre_andrade_advogado/",
     description: "Dicas para o Terceiro Setor",
   },
   {
     name: "Facebook",
     icon: Facebook,
-    href: "https://facebook.com",
+    href: "https://www.facebook.com/AndreAndradeAdvogado/",
     description: "Comunidade e novidades",
   },
 ];
