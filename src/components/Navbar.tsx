@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { Menu, X, Scale } from "lucide-react";
+import { Menu, X } from "lucide-react";
+import logo from "@/assets/logo.png";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -27,14 +28,12 @@ const Navbar = () => {
     >
       <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
         {/* Logo */}
-        <a href="#" className="flex items-center gap-3 group">
-          <div className="w-8 h-8 flex items-center justify-center rounded-sm border border-gold/60 group-hover:border-gold transition-colors duration-200">
-            <Scale className="w-4 h-4 text-gold" />
-          </div>
-          <div className="leading-tight">
-            <p className="text-ivory text-xs font-semibold tracking-widest uppercase">André Andrade</p>
-            <p className="text-gold/80 text-[10px] tracking-widest uppercase">Advogado · Terceiro Setor</p>
-          </div>
+        <a href="#" className="flex items-center group">
+          <img
+            src={logo}
+            alt="André Andrade - Direito do Terceiro Setor"
+            className="h-12 w-auto object-contain"
+          />
         </a>
 
         {/* Desktop nav */}
