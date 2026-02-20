@@ -65,7 +65,7 @@ const HeroSection = () => {
           {[
             { value: "15+", label: "Anos de Experiência" },
             { value: "OSCs", label: "Associações · Fundações" },
-            { value: "OSCs", label: "Foco no Terceiro Setor" },
+            { value: "100%", label: "Foco no Terceiro Setor" },
           ].map((item) => (
             <div key={item.label} className="text-center">
               <p className="text-2xl font-bold" style={{ color: "hsl(var(--gold))" }}>
