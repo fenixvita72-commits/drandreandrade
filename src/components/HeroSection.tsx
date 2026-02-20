@@ -64,7 +64,7 @@ const HeroSection = () => {
         <div className="mt-16 pt-8 border-t flex flex-col sm:flex-row gap-6 justify-center" style={{ borderColor: "hsl(var(--gold) / 0.2)" }}>
           {[
             { value: "15+", label: "Anos de Experiência" },
-            { value: "ONGs", label: "Associações · Fundações" },
+            { value: "OSCs", label: "Associações · Fundações" },
             { value: "OSCs", label: "Foco no Terceiro Setor" },
           ].map((item) => (
             <div key={item.label} className="text-center">
