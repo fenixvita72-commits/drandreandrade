@@ -119,9 +119,9 @@ const AboutSection = () => {
                   </p>
                   <p
                     className="text-xs tracking-wider uppercase"
-                    style={{ color: "hsl(var(--gold) / 0.7)" }}>
+                    style={{ color: "hsl(var(--gold) / 0.7)" }}>ADVOGADO ESPECIALISTA
+OAB/SP 489.013
 
-                    OAB · Advogado Especialista
                   </p>
                 </div>
               </div>
