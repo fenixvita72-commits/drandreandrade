@@ -1,4 +1,5 @@
 import { CheckCircle2 } from "lucide-react";
+import triquetra from "@/assets/triquetra.png";
 
 const highlights = [
 "Especialista exclusivo no Terceiro Setor",
@@ -104,12 +105,10 @@ const AboutSection = () => {
                 clareza estratégica para quem transforma o mundo.
               </p>
               <div className="flex items-center gap-4">
-                <div
-                  className="w-12 h-12 rounded-sm flex items-center justify-center text-gold font-bold text-xl"
-                  style={{ background: "hsl(var(--gold) / 0.15)" }}>
-
-                  AA
-                </div>
+                <img
+                  src={triquetra}
+                  alt="Símbolo triquetra"
+                  className="w-12 h-12 rounded-sm object-contain" />
                 <div>
                   <p
                     className="font-semibold"
