@@ -1,19 +1,19 @@
 import { CheckCircle2 } from "lucide-react";
 
 const highlights = [
-  "Especialista exclusivo no Terceiro Setor",
-  "Linguagem acessível, sem juridiquês",
-  "Atendimento humanizado e estratégico",
-  "Soluções preventivas, não apenas reativas",
-];
+"Especialista exclusivo no Terceiro Setor",
+"Linguagem acessível, sem juridiquês",
+"Atendimento humanizado e estratégico",
+"Soluções preventivas, não apenas reativas"];
+
 
 const AboutSection = () => {
   return (
     <section
       id="sobre"
       className="py-24 px-6"
-      style={{ background: "hsl(var(--navy))" }}
-    >
+      style={{ background: "hsl(var(--navy))" }}>
+
       <div className="max-w-6xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* Left: text */}
@@ -21,28 +21,28 @@ const AboutSection = () => {
             <span className="section-label mb-4 block">Sobre o advogado</span>
             <span
               className="block w-16 h-0.5 mb-8"
-              style={{ background: "var(--gradient-gold)" }}
-            />
+              style={{ background: "var(--gradient-gold)" }} />
+
             <h2
               className="text-3xl md:text-4xl font-bold mb-6 leading-snug"
-              style={{ color: "hsl(var(--ivory))" }}
-            >
+              style={{ color: "hsl(var(--ivory))" }}>
+
               Direito com Propósito
             </h2>
             <p
               className="mb-5 leading-relaxed"
-              style={{ color: "hsl(var(--ivory) / 0.75)" }}
-            >
-              André Andrade da Silva é advogado especializado exclusivamente no
-              Direito do Terceiro Setor. Ao longo de sua trajetória, percebeu
-              que ONGs, associações e fundações — organizações que movem o
-              Brasil — muitas vezes operam em risco jurídico por falta de
-              assessoria especializada.
+              style={{ color: "hsl(var(--ivory) / 0.75)" }}>André Andrade da Silva é advogado especializado exclusivamente no Direito do Terceiro Setor. Ao longo de sua trajetória, percebeu que OSCs, associações e fundações — organizações que movem o Brasil — muitas vezes operam em risco jurídico por falta de assessoria especializada.
+
+
+
+
+
+
             </p>
             <p
               className="mb-8 leading-relaxed"
-              style={{ color: "hsl(var(--ivory) / 0.75)" }}
-            >
+              style={{ color: "hsl(var(--ivory) / 0.75)" }}>
+
               Seu trabalho vai além de resolver problemas: é ser o parceiro
               estratégico que permite que sua organização atue com confiança,
               transparência e conformidade legal — para que você possa focar
@@ -51,17 +51,17 @@ const AboutSection = () => {
 
             {/* Highlights */}
             <ul className="space-y-3">
-              {highlights.map((item) => (
-                <li key={item} className="flex items-center gap-3">
+              {highlights.map((item) =>
+              <li key={item} className="flex items-center gap-3">
                   <CheckCircle2 className="w-5 h-5 flex-shrink-0 text-gold" />
                   <span
-                    className="text-sm"
-                    style={{ color: "hsl(var(--ivory) / 0.85)" }}
-                  >
+                  className="text-sm"
+                  style={{ color: "hsl(var(--ivory) / 0.85)" }}>
+
                     {item}
                   </span>
                 </li>
-              ))}
+              )}
             </ul>
 
             <div className="mt-10">
@@ -69,8 +69,8 @@ const AboutSection = () => {
                 href="https://wa.me/5516981324028"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-gold"
-              >
+                className="btn-gold">
+
                 Falar com André
               </a>
             </div>
@@ -82,23 +82,23 @@ const AboutSection = () => {
               className="p-10 rounded-sm border"
               style={{
                 background: "hsl(var(--navy-light))",
-                borderColor: "hsl(var(--gold) / 0.25)",
-              }}
-            >
+                borderColor: "hsl(var(--gold) / 0.25)"
+              }}>
+
               {/* Quote mark */}
               <span
                 className="block text-7xl font-serif leading-none mb-4"
-                style={{ color: "hsl(var(--gold))" }}
-              >
+                style={{ color: "hsl(var(--gold))" }}>
+
                 "
               </span>
               <p
                 className="text-xl font-light leading-relaxed italic mb-8"
                 style={{
                   fontFamily: "Playfair Display, serif",
-                  color: "hsl(var(--ivory) / 0.9)",
-                }}
-              >
+                  color: "hsl(var(--ivory) / 0.9)"
+                }}>
+
                 Acredito que o Direito deve ser um facilitador, não um
                 obstáculo. Minha missão é transformar a complexidade jurídica em
                 clareza estratégica para quem transforma o mundo.
@@ -106,21 +106,21 @@ const AboutSection = () => {
               <div className="flex items-center gap-4">
                 <div
                   className="w-12 h-12 rounded-sm flex items-center justify-center text-gold font-bold text-xl"
-                  style={{ background: "hsl(var(--gold) / 0.15)" }}
-                >
+                  style={{ background: "hsl(var(--gold) / 0.15)" }}>
+
                   AA
                 </div>
                 <div>
                   <p
                     className="font-semibold"
-                    style={{ color: "hsl(var(--ivory))" }}
-                  >
+                    style={{ color: "hsl(var(--ivory))" }}>
+
                     André Andrade da Silva
                   </p>
                   <p
                     className="text-xs tracking-wider uppercase"
-                    style={{ color: "hsl(var(--gold) / 0.7)" }}
-                  >
+                    style={{ color: "hsl(var(--gold) / 0.7)" }}>
+
                     OAB · Advogado Especialista
                   </p>
                 </div>
@@ -132,14 +132,14 @@ const AboutSection = () => {
               className="absolute -top-3 -right-3 w-16 h-16 rounded-sm"
               style={{
                 background: "var(--gradient-gold)",
-                opacity: 0.15,
-              }}
-            />
+                opacity: 0.15
+              }} />
+
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>);
+
 };
 
 export default AboutSection;
