@@ -1,4 +1,5 @@
 import { Linkedin, Instagram, Facebook } from "lucide-react";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 const socialLinks = [
   {
@@ -22,21 +23,25 @@ const socialLinks = [
 ];
 
 const SocialSection = () => {
+  const { ref, isVisible } = useScrollReveal();
+
   return (
     <section className="py-24 px-6 bg-background">
-      <div className="max-w-4xl mx-auto text-center">
-        <span className="section-label mb-4 block">Conecte-se</span>
-        <span className="gold-line mb-6 block" />
-        <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-          Acompanhe nas Redes Sociais
-        </h2>
-        <p className="text-muted-foreground max-w-lg mx-auto mb-14 leading-relaxed">
-          Conteúdo relevante para gestores do Terceiro Setor: orientações
-          jurídicas, novidades legislativas e muito mais.
-        </p>
+      <div ref={ref} className="max-w-4xl mx-auto text-center">
+        <div className={`transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+          <span className="section-label mb-4 block">Conecte-se</span>
+          <span className="gold-line mb-6 block" />
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+            Acompanhe nas Redes Sociais
+          </h2>
+          <p className="text-muted-foreground max-w-lg mx-auto mb-14 leading-relaxed">
+            Conteúdo relevante para gestores do Terceiro Setor: orientações
+            jurídicas, novidades legislativas e muito mais.
+          </p>
+        </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          {socialLinks.map((social) => {
+          {socialLinks.map((social, i) => {
             const Icon = social.icon;
             return (
               <a
@@ -44,7 +49,8 @@ const SocialSection = () => {
                 href={social.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="service-card group flex flex-col items-center gap-4 text-center cursor-pointer no-underline"
+                className={`service-card group flex flex-col items-center gap-4 text-center cursor-pointer no-underline transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+                style={{ transitionDelay: isVisible ? `${200 + i * 150}ms` : "0ms" }}
               >
                 <div
                   className="w-14 h-14 rounded-sm flex items-center justify-center transition-all duration-300 group-hover:scale-110"

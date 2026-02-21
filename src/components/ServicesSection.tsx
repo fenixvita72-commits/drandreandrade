@@ -1,4 +1,5 @@
 import { Building2, Receipt, Handshake, Shield } from "lucide-react";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 const services = [
   {
@@ -28,11 +29,13 @@ const services = [
 ];
 
 const ServicesSection = () => {
+  const { ref, isVisible } = useScrollReveal();
+
   return (
     <section id="servicos" className="py-24 px-6 bg-background">
-      <div className="max-w-6xl mx-auto">
+      <div ref={ref} className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-16">
+        <div className={`text-center mb-16 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
           <span className="section-label mb-4 block">O que ofereço</span>
           <span className="gold-line mb-6 block" />
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
@@ -49,7 +52,11 @@ const ServicesSection = () => {
           {services.map((service, index) => {
             const Icon = service.icon;
             return (
-              <div key={index} className="service-card group">
+              <div
+                key={index}
+                className={`service-card group transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+                style={{ transitionDelay: isVisible ? `${200 + index * 150}ms` : "0ms" }}
+              >
                 {/* Number */}
                 <span
                   className="absolute top-6 right-7 text-5xl font-bold select-none"
@@ -85,7 +92,7 @@ const ServicesSection = () => {
         </div>
 
         {/* CTA */}
-        <div className="text-center mt-14">
+        <div className={`text-center mt-14 transition-all duration-700 delay-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
           <a
             href="https://wa.me/5516981324028"
             target="_blank"
