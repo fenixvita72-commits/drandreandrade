@@ -15,10 +15,10 @@ export const useScrollReveal = <T extends HTMLElement = HTMLDivElement>(
     const element = ref.current;
     if (!element) return;
 
-    // Check if already visible — delay so CSS transition can play
+    // Only skip observer if element is well within the viewport (top half)
     const rect = element.getBoundingClientRect();
-    if (rect.top < window.innerHeight + 100 && rect.bottom > -100) {
-      const timer = setTimeout(() => setIsVisible(true), 100);
+    if (rect.bottom > 0 && rect.top < window.innerHeight * 0.4) {
+      const timer = setTimeout(() => setIsVisible(true), 200);
       return () => clearTimeout(timer);
     }
 
