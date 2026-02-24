@@ -15,11 +15,11 @@ export const useScrollReveal = <T extends HTMLElement = HTMLDivElement>(
     const element = ref.current;
     if (!element) return;
 
-    // Check if already visible
+    // Check if already visible — delay so CSS transition can play
     const rect = element.getBoundingClientRect();
     if (rect.top < window.innerHeight + 100 && rect.bottom > -100) {
-      setIsVisible(true);
-      return;
+      const timer = setTimeout(() => setIsVisible(true), 100);
+      return () => clearTimeout(timer);
     }
 
     const observer = new IntersectionObserver(
