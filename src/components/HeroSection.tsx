@@ -19,14 +19,14 @@ const HeroSection = () => {
 
       <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
         {/* Label */}
-        <span className="section-label mb-6 block">Direito para o Terceiro Setor</span>
+        <span className="section-label mb-6 block hero-animate hero-animate-delay-1">Direito para o Terceiro Setor</span>
 
         {/* Gold divider */}
-        <span className="gold-line mb-8 block" />
+        <span className="gold-line mb-8 block hero-animate hero-animate-delay-1" />
 
         {/* Headline */}
         <h1
-          className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6"
+          className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 hero-animate hero-animate-delay-2"
           style={{ color: "hsl(var(--ivory))", letterSpacing: "-0.02em" }}
         >
           Segurança jurídica para quem{" "}
@@ -38,7 +38,7 @@ const HeroSection = () => {
 
         {/* Subheadline */}
         <p
-          className="text-lg md:text-xl mb-12 max-w-2xl mx-auto leading-relaxed font-light"
+          className="text-lg md:text-xl mb-12 max-w-2xl mx-auto leading-relaxed font-light hero-animate hero-animate-delay-3"
           style={{ color: "hsl(var(--ivory) / 0.75)" }}
         >
           Consultoria estratégica para o Terceiro Setor. Proteja sua instituição
@@ -46,7 +46,7 @@ const HeroSection = () => {
         </p>
 
         {/* CTAs */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center hero-animate hero-animate-delay-4">
           <a
             href="https://wa.me/5516981324028"
             target="_blank"
@@ -61,7 +61,7 @@ const HeroSection = () => {
         </div>
 
         {/* Trust strip */}
-        <div className="mt-16 pt-8 border-t flex flex-col sm:flex-row gap-6 justify-center" style={{ borderColor: "hsl(var(--gold) / 0.2)" }}>
+        <div className="mt-16 pt-8 border-t flex flex-col sm:flex-row gap-6 justify-center hero-animate hero-animate-delay-5" style={{ borderColor: "hsl(var(--gold) / 0.2)" }}>
           {[
             { value: "15+", label: "Anos de Experiência" },
             { value: "OSCs", label: "Associações · Fundações" },
