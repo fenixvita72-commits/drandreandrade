@@ -12,7 +12,7 @@ const HeroSection = () => {
         style={{ backgroundImage: `url(${heroBg})` }}
       />
       {/* Deep overlay for legibility */}
-      <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, hsl(214,40%,9%,0.92) 0%, hsl(214,37%,14%,0.85) 60%, hsl(214,30%,20%,0.78) 100%)" }} />
+      <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, hsl(140,22%,12%,0.92) 0%, hsl(140,18%,18%,0.85) 60%, hsl(140,15%,24%,0.78) 100%)" }} />
 
       {/* Gold decorative line top */}
       <div className="absolute top-0 left-0 right-0 h-[3px]" style={{ background: "var(--gradient-gold)" }} />
@@ -39,10 +39,10 @@ const HeroSection = () => {
         {/* Subheadline */}
         <p
           className="text-lg md:text-xl mb-12 max-w-2xl mx-auto leading-relaxed font-light hero-animate hero-animate-delay-3"
-          style={{ color: "hsl(var(--ivory) / 0.75)" }}
+          style={{ color: "hsl(var(--ivory) / 0.82)" }}
         >
-          Consultoria estratégica para o Terceiro Setor. Proteja sua instituição
-          e foque no seu impacto social.
+          Advocacia parceira e consultoria estratégica para o Terceiro Setor.
+          Protegemos a governança da sua instituição para você focar em transformar realidades.
         </p>
 
         {/* CTAs */}
@@ -53,19 +53,19 @@ const HeroSection = () => {
             rel="noopener noreferrer"
             className="btn-gold w-full sm:w-auto"
           >
-            Agendar Reunião Diagnóstica
+            Falar com o Dr. André
           </a>
           <a href="#servicos" className="btn-ghost-gold w-full sm:w-auto">
-            Conheça os Serviços
+            Conhecer Serviços
           </a>
         </div>
 
         {/* Trust strip */}
         <div className="mt-16 pt-8 border-t flex flex-col sm:flex-row gap-6 justify-center hero-animate hero-animate-delay-5" style={{ borderColor: "hsl(var(--gold) / 0.2)" }}>
           {[
-            { value: "15+", label: "Anos de Experiência" },
+            { value: "15+", label: "Anos de Advocacia Social" },
             { value: "OSCs", label: "Associações · Fundações" },
-            { value: "100%", label: "Foco no Terceiro Setor" },
+            { value: "100%", label: "Foco no Impacto Social" },
           ].map((item) => (
             <div key={item.label} className="text-center">
               <p className="text-2xl font-bold" style={{ color: "hsl(var(--gold))" }}>

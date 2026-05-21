@@ -15,6 +15,7 @@ const Navbar = () => {
   const links = [
     { label: "Serviços", href: "#servicos" },
     { label: "Sobre", href: "#sobre" },
+    { label: "FAQ", href: "#faq" },
     { label: "Contato", href: "#contato" },
   ];
 
@@ -49,7 +50,7 @@ const Navbar = () => {
             rel="noopener noreferrer"
             className="btn-gold text-[11px] px-5 py-2.5"
           >
-            Agendar Reunião
+            Falar com André
           </a>
         </nav>
 
@@ -83,7 +84,7 @@ const Navbar = () => {
             className="btn-gold text-center text-[11px]"
             onClick={() => setMenuOpen(false)}
           >
-            Agendar Reunião
+            Falar com André
           </a>
         </div>
       )}

@@ -49,11 +49,11 @@ const SocialSection = () => {
                 href={social.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`service-card group flex flex-col items-center gap-4 text-center cursor-pointer no-underline transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+                className={`service-card group flex flex-col items-center gap-4 text-center cursor-pointer no-underline transition-all duration-300 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
                 style={{ transitionDelay: isVisible ? `${200 + i * 150}ms` : "0ms" }}
               >
                 <div
-                  className="w-14 h-14 rounded-sm flex items-center justify-center transition-all duration-300 group-hover:scale-110"
+                  className="w-14 h-14 rounded-md flex items-center justify-center transition-all duration-300 group-hover:scale-110"
                   style={{ background: "hsl(var(--navy) / 0.06)" }}
                 >
                   <Icon className="w-6 h-6 text-gold" />

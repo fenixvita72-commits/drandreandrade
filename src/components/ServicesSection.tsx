@@ -67,7 +67,7 @@ const ServicesSection = () => {
 
                 {/* Icon */}
                 <div
-                  className="w-12 h-12 rounded-sm flex items-center justify-center mb-5 transition-colors duration-300 group-hover:bg-gold/10"
+                  className="w-12 h-12 rounded-md flex items-center justify-center mb-5 transition-colors duration-300 group-hover:bg-gold/10"
                   style={{ background: "hsl(var(--navy) / 0.06)" }}
                 >
                   <Icon className="w-5 h-5 text-gold" />

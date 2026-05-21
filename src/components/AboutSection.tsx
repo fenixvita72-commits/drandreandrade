@@ -84,7 +84,7 @@ const AboutSection = () => {
           {/* Right: quote card */}
           <div className={`relative transition-all duration-700 delay-300 ${isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-8"}`}>
             <div
-              className="p-10 rounded-sm border"
+              className="p-10 rounded-xl border animate-pulse-subtle"
               style={{
                 background: "hsl(var(--navy-light))",
                 borderColor: "hsl(var(--gold) / 0.25)",
@@ -103,15 +103,15 @@ const AboutSection = () => {
                   color: "hsl(var(--ivory) / 0.9)",
                 }}
               >
-                Acredito que o Direito deve ser um facilitador, não um obstáculo.
-                Minha missão é transformar a complexidade jurídica em clareza
-                estratégica para quem transforma o mundo.
+                Acredito que o Direito deve ser um instrumento de acolhimento e fortalecimento.
+                Minha missão é traduzir a complexidade das leis em segurança jurídica estratégica
+                para que as organizações sociais continuem transformando realidades.
               </p>
               <div className="flex items-center gap-4">
                 <img
                   src={triquetra}
                   alt="Símbolo triquetra"
-                  className="w-12 h-12 rounded-sm object-contain"
+                  className="w-12 h-12 rounded-md object-contain"
                 />
                 <div>
                   <p
@@ -134,7 +134,7 @@ const AboutSection = () => {
 
             {/* Decorative corner */}
             <div
-              className="absolute -top-3 -right-3 w-16 h-16 rounded-sm"
+              className="absolute -top-3 -right-3 w-16 h-16 rounded-xl"
               style={{
                 background: "var(--gradient-gold)",
                 opacity: 0.15,

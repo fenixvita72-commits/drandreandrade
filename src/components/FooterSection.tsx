@@ -23,14 +23,14 @@ const FooterSection = () => {
               className="text-3xl md:text-4xl font-bold mb-5"
               style={{ color: "hsl(var(--ivory))" }}
             >
-              Agende sua Reunião Diagnóstica
+              Vamos conversar sobre o seu projeto?
             </h2>
             <p
               className="max-w-xl mx-auto mb-12 leading-relaxed"
               style={{ color: "hsl(var(--ivory) / 0.65)" }}
             >
               Uma conversa sem compromisso para entender os desafios jurídicos da
-              sua organização e descobrir como posso ajudar.
+              sua entidade e apoiar o seu impacto social.
             </p>
           </div>
 
@@ -40,14 +40,14 @@ const FooterSection = () => {
               href="https://wa.me/5516981324028"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-4 p-5 rounded-sm border group transition-all duration-300 hover:border-gold/60 hover:bg-gold/5"
+              className="flex items-center gap-4 p-5 rounded-xl border group transition-all duration-300 hover:border-gold/60 hover:bg-gold/5"
               style={{
                 background: "hsl(var(--navy-light))",
                 borderColor: "hsl(var(--gold) / 0.25)",
               }}
             >
               <div
-                className="w-10 h-10 rounded-sm flex items-center justify-center flex-shrink-0"
+                className="w-10 h-10 rounded-md flex items-center justify-center flex-shrink-0"
                 style={{ background: "hsl(var(--gold) / 0.15)" }}
               >
                 <MessageCircle className="w-5 h-5 text-gold" />
@@ -70,14 +70,14 @@ const FooterSection = () => {
 
             <a
               href="mailto:contato@andreandrade.adv.br"
-              className="flex items-center gap-4 p-5 rounded-sm border group transition-all duration-300 hover:border-gold/60 hover:bg-gold/5"
+              className="flex items-center gap-4 p-5 rounded-xl border group transition-all duration-300 hover:border-gold/60 hover:bg-gold/5"
               style={{
                 background: "hsl(var(--navy-light))",
                 borderColor: "hsl(var(--gold) / 0.25)",
               }}
             >
               <div
-                className="w-10 h-10 rounded-sm flex items-center justify-center flex-shrink-0"
+                className="w-10 h-10 rounded-md flex items-center justify-center flex-shrink-0"
                 style={{ background: "hsl(var(--gold) / 0.15)" }}
               >
                 <Mail className="w-5 h-5 text-gold" />
@@ -105,7 +105,7 @@ const FooterSection = () => {
             rel="noopener noreferrer"
             className="btn-gold"
           >
-            Agendar Reunião Diagnóstica
+            Falar com o Dr. André
           </a>
         </div>
       </div>
