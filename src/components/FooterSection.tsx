@@ -111,29 +111,60 @@ const FooterSection = () => {
       </div>
 
       {/* Footer bar */}
-      <div className="py-8 px-6">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div
-              className="w-7 h-7 rounded-sm flex items-center justify-center border"
-              style={{ borderColor: "hsl(var(--gold) / 0.4)" }}
-            >
-              <Scale className="w-3.5 h-3.5 text-gold" />
+      <div className="py-12 px-6">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between gap-8 md:gap-4">
+          <div className="flex flex-col gap-3 max-w-sm">
+            <div className="flex items-center gap-3">
+              <div
+                className="w-7 h-7 rounded-sm flex items-center justify-center border flex-shrink-0"
+                style={{ borderColor: "hsl(var(--gold) / 0.4)" }}
+              >
+                <Scale className="w-3.5 h-3.5 text-gold" />
+              </div>
+              <p
+                className="text-sm font-medium"
+                style={{ color: "hsl(var(--ivory) / 0.9)" }}
+              >
+                André Andrade da Silva
+              </p>
             </div>
             <p
-              className="text-xs"
-              style={{ color: "hsl(var(--ivory) / 0.5)" }}
+              className="text-xs leading-relaxed"
+              style={{ color: "hsl(var(--ivory) / 0.6)" }}
             >
-              André Andrade da Silva - OAB/SP 489.013 - Advogado especializado em
-              Terceiro Setor
+              OAB/SP 489.013 <br />
+              Advogado especialista em Terceiro Setor. Site de caráter estritamente
+              informativo, em conformidade com o Provimento nº 205/2021 e o Código de 
+              Ética e Disciplina da OAB.
             </p>
           </div>
-          <p
-            className="text-xs"
-            style={{ color: "hsl(var(--ivory) / 0.35)" }}
-          >
-            © {new Date().getFullYear()} · Todos os direitos reservados
-          </p>
+
+          <div className="flex flex-col gap-2">
+            <h4 className="text-sm font-semibold mb-2" style={{ color: "hsl(var(--ivory))" }}>Institucional</h4>
+            <a href="#" className="text-xs hover:text-gold transition-colors" style={{ color: "hsl(var(--ivory) / 0.6)" }}>Termos de Uso</a>
+            <a href="#" className="text-xs hover:text-gold transition-colors" style={{ color: "hsl(var(--ivory) / 0.6)" }}>Política de Privacidade</a>
+          </div>
+
+          <div className="flex flex-col gap-2 md:items-end">
+            <p className="text-xs" style={{ color: "hsl(var(--ivory) / 0.4)" }}>
+              Parte do ecossistema
+            </p>
+            <a 
+              href="https://andreandrade.adv.br" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-sm font-medium hover:text-gold transition-colors flex items-center gap-2 px-3 py-1.5 rounded bg-white/5 border border-white/10" 
+              style={{ color: "hsl(var(--ivory))" }}
+            >
+              andreandrade.adv.br
+            </a>
+            <p
+              className="text-xs mt-4"
+              style={{ color: "hsl(var(--ivory) / 0.35)" }}
+            >
+              © {new Date().getFullYear()} · Todos os direitos reservados
+            </p>
+          </div>
         </div>
       </div>
 

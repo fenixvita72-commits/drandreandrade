@@ -38,20 +38,18 @@ const AboutSection = () => {
               className="mb-5 leading-relaxed"
               style={{ color: "hsl(var(--ivory) / 0.75)" }}
             >
-              André Andrade da Silva é advogado especializado exclusivamente no
-              Direito do Terceiro Setor. Ao longo de sua trajetória, percebeu que
-              OSCs, associações e fundações — organizações que movem o Brasil —
-              muitas vezes operam em risco jurídico por falta de assessoria
-              especializada.
+              André Andrade da Silva possui uma trajetória marcada pelo equilíbrio entre
+              uma forte formação técnica e a vivência estratégica em gestão organizacional.
+              Com atuação dedicada exclusivamente ao Terceiro Setor, compreende profundamente
+              a realidade das OSCs, associações e fundações.
             </p>
             <p
               className="mb-8 leading-relaxed"
               style={{ color: "hsl(var(--ivory) / 0.75)" }}
             >
-              Seu trabalho vai além de resolver problemas: é ser o parceiro
-              estratégico que permite que sua organização atue com confiança,
-              transparência e conformidade legal — para que você possa focar no
-              que realmente importa: o impacto social.
+              Seu diferencial reside na união da excelência jurídica com a sensibilidade
+              humana no atendimento, atuando não apenas na resolução de conflitos, mas
+              como um parceiro estratégico que impulsiona o impacto social seguro.
             </p>
 
             {/* Highlights */}
@@ -69,7 +67,7 @@ const AboutSection = () => {
               ))}
             </ul>
 
-            <div className="mt-10">
+            <div className="mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-6">
               <a
                 href="https://wa.me/5516981324028"
                 target="_blank"
@@ -78,6 +76,12 @@ const AboutSection = () => {
               >
                 Falar com André
               </a>
+              <div className="flex items-center gap-2 px-4 py-2 rounded-lg border border-gold/30 bg-gold/5">
+                <div className="w-2 h-2 rounded-full bg-gold" />
+                <span className="text-sm tracking-wider uppercase font-medium text-gold">
+                  OAB/SP 489.013
+                </span>
+              </div>
             </div>
           </div>
 
@@ -121,12 +125,10 @@ const AboutSection = () => {
                     André Andrade da Silva
                   </p>
                   <p
-                    className="text-xs tracking-wider uppercase"
+                    className="text-xs tracking-wider uppercase mt-1"
                     style={{ color: "hsl(var(--gold) / 0.7)" }}
                   >
                     ADVOGADO ESPECIALISTA
-                    <br />
-                    OAB/SP 489.013
                   </p>
                 </div>
               </div>

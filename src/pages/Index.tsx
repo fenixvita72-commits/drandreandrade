@@ -6,10 +6,11 @@ import TestimonialsSection from "@/components/TestimonialsSection";
 import FAQSection from "@/components/FAQSection";
 import SocialSection from "@/components/SocialSection";
 import FooterSection from "@/components/FooterSection";
+import ChatWidget from "@/components/ChatWidget";
 
 const Index = () => {
   return (
-    <main className="overflow-x-hidden">
+    <main className="overflow-x-hidden relative">
       <Navbar />
       <HeroSection />
       <ServicesSection />
@@ -18,6 +19,7 @@ const Index = () => {
       <FAQSection />
       <SocialSection />
       <FooterSection />
+      <ChatWidget />
     </main>
   );
 };
