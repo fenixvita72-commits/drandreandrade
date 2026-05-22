@@ -3,7 +3,7 @@ import { LayoutDashboard, MessageCircle, Bot, BookOpen, Users, LogOut, Menu } fr
 import { useState } from "react";
 
 const sidebarLinks = [
-  { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
+  { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
   { name: "Conexão WhatsApp", href: "/admin/whatsapp", icon: MessageCircle },
   { name: "Configuração de IA", href: "/admin/ai", icon: Bot },
   { name: "Base de Conhecimento", href: "/admin/knowledge", icon: BookOpen },

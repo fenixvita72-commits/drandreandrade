@@ -7,6 +7,10 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import AdminLayout from "./layouts/AdminLayout";
 import AiSettings from "./pages/admin/AiSettings";
+import LeadsView from "./pages/admin/LeadsView";
+import EvolutionApiConfig from "./pages/admin/EvolutionApiConfig";
+import KnowledgeBase from "./pages/admin/KnowledgeBase";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 
 const queryClient = new QueryClient();
 
@@ -21,10 +25,13 @@ const App = () => (
           
           {/* Admin Routes */}
           <Route path="/admin" element={<AdminLayout />}>
-            <Route index element={<Navigate to="/admin/ai" replace />} />
+            <Route index element={<Navigate to="/admin/dashboard" replace />} />
+            <Route path="dashboard" element={<AdminDashboard />} />
             <Route path="ai" element={<AiSettings />} />
-            {/* Placeholder for other routes */}
-            <Route path="*" element={<div className="p-8 text-gray-500">Página em construção. Navegue para Configuração de IA.</div>} />
+            <Route path="leads" element={<LeadsView />} />
+            <Route path="whatsapp" element={<EvolutionApiConfig />} />
+            <Route path="knowledge" element={<KnowledgeBase />} />
+            <Route path="*" element={<div className="p-8 text-gray-500">Página em construção.</div>} />
           </Route>
 
           <Route path="*" element={<NotFound />} />
