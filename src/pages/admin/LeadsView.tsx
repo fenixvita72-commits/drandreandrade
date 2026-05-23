@@ -1,25 +1,17 @@
-import { Users, Search, Filter, X, Bot, Sparkles } from "lucide-react";
-import { useState } from "react";
+import { Users, Search, Filter, X, Bot, Sparkles, Loader2 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase";
+import { useToast } from "@/hooks/use-toast";
 
-// Dados simulados (mock)
-const mockLeads = [
-  { 
-    id: 1, name: "Maria Silva", phone: "(11) 98765-4321", origin: "Chat Flutuante", date: "22/05/2026", status: "Novo",
-    aiSummary: "A cliente é presidente de uma associação de moradores e busca informações iniciais sobre como obter a certificação CEBAS. Ela já leu alguns artigos, mas tem dúvidas sobre a documentação exigida."
-  },
-  { 
-    id: 2, name: "Instituto Esperança", phone: "(16) 91234-5678", origin: "WhatsApp Link", date: "21/05/2026", status: "Em Atendimento",
-    aiSummary: "Representante legal (João) quer agendar reunião para revisar o estatuto da ONG, focando nas novas regras de imunidade tributária."
-  },
-  { 
-    id: 3, name: "João Pereira", phone: "(11) 99999-8888", origin: "Chat Flutuante", date: "20/05/2026", status: "Fechado",
-    aiSummary: "Dúvida simples sobre endereço do escritório. Resolvido pelo bot."
-  },
-  { 
-    id: 4, name: "Associação Bem Viver", phone: "(19) 97777-6666", origin: "Contato Direto", date: "18/05/2026", status: "Fechado",
-    aiSummary: "Buscou consultoria jurídica preventiva. Encaminhado para a equipe comercial."
-  },
-];
+type Lead = {
+  id: string;
+  name: string;
+  phone: string;
+  origin: string;
+  status: string;
+  ai_summary: string;
+  created_at: string;
+};
 
 const getStatusBadge = (status: string) => {
   switch (status) {
@@ -35,10 +27,42 @@ const getStatusBadge = (status: string) => {
 };
 
 const LeadsView = () => {
-  const [selectedLead, setSelectedLead] = useState<typeof mockLeads[0] | null>(null);
+  const { toast } = useToast();
+  const [leads, setLeads] = useState<Lead[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
+
+  useEffect(() => {
+    fetchLeads();
+  }, []);
+
+  const fetchLeads = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('leads')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setLeads(data || []);
+    } catch (error) {
+      console.error('Erro ao buscar leads:', error);
+      toast({
+        title: "Erro de Conexão",
+        description: "Não foi possível carregar os leads do banco de dados.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const formatDate = (isoString: string) => {
+    return new Date(isoString).toLocaleDateString('pt-BR');
+  };
 
   return (
-    <div className="max-w-6xl mx-auto pb-12 relative">
+    <div className="max-w-6xl mx-auto pb-12 relative animate-in fade-in duration-500">
       <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold font-serif text-gray-900 mb-2" style={{ fontFamily: "Playfair Display, serif" }}>
@@ -70,54 +94,67 @@ const LeadsView = () => {
             />
           </div>
           <div className="text-sm text-gray-500 hidden sm:block">
-            Total: <span className="font-semibold text-gray-900">{mockLeads.length}</span> leads
+            Total: <span className="font-semibold text-gray-900">{leads.length}</span> leads
           </div>
         </div>
 
         {/* Tabela */}
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-gray-600">
-            <thead className="text-xs uppercase bg-gray-50 text-gray-500 border-b border-gray-100">
-              <tr>
-                <th className="px-6 py-4 font-semibold">Nome / Organização</th>
-                <th className="px-6 py-4 font-semibold">Contato</th>
-                <th className="px-6 py-4 font-semibold">Origem</th>
-                <th className="px-6 py-4 font-semibold">Data</th>
-                <th className="px-6 py-4 font-semibold">Status</th>
-                <th className="px-6 py-4 font-semibold text-right">Ação</th>
-              </tr>
-            </thead>
-            <tbody>
-              {mockLeads.map((lead) => (
-                <tr key={lead.id} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
-                  <td className="px-6 py-4 font-medium text-gray-900 flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-[#1e3a5f]/10 flex items-center justify-center flex-shrink-0">
-                      <Users className="w-4 h-4 text-[#1e3a5f]" />
-                    </div>
-                    {lead.name}
-                  </td>
-                  <td className="px-6 py-4">{lead.phone}</td>
-                  <td className="px-6 py-4">
-                    <span className="text-gray-500 text-xs border border-gray-200 px-2 py-1 rounded bg-white">
-                      {lead.origin}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-gray-500">{lead.date}</td>
-                  <td className="px-6 py-4">
-                    {getStatusBadge(lead.status)}
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <button 
-                      onClick={() => setSelectedLead(lead)}
-                      className="text-[#1e3a5f] hover:underline font-medium text-sm"
-                    >
-                      Detalhes
-                    </button>
-                  </td>
+        <div className="overflow-x-auto min-h-[300px]">
+          {isLoading ? (
+            <div className="flex flex-col items-center justify-center h-[300px] text-gray-400">
+              <Loader2 className="w-8 h-8 animate-spin mb-4 text-[#1e3a5f]" />
+              <p>Carregando leads do Supabase...</p>
+            </div>
+          ) : leads.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-[300px] text-gray-400">
+              <Users className="w-12 h-12 mb-4 opacity-20" />
+              <p>Nenhum lead encontrado no banco de dados.</p>
+              <p className="text-sm mt-1">Os novos leads captados pelo bot aparecerão aqui.</p>
+            </div>
+          ) : (
+            <table className="w-full text-left text-sm text-gray-600">
+              <thead className="text-xs uppercase bg-gray-50 text-gray-500 border-b border-gray-100">
+                <tr>
+                  <th className="px-6 py-4 font-semibold">Nome / Organização</th>
+                  <th className="px-6 py-4 font-semibold">Contato</th>
+                  <th className="px-6 py-4 font-semibold">Origem</th>
+                  <th className="px-6 py-4 font-semibold">Data</th>
+                  <th className="px-6 py-4 font-semibold">Status</th>
+                  <th className="px-6 py-4 font-semibold text-right">Ação</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {leads.map((lead) => (
+                  <tr key={lead.id} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
+                    <td className="px-6 py-4 font-medium text-gray-900 flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-[#1e3a5f]/10 flex items-center justify-center flex-shrink-0">
+                        <Users className="w-4 h-4 text-[#1e3a5f]" />
+                      </div>
+                      {lead.name}
+                    </td>
+                    <td className="px-6 py-4">{lead.phone}</td>
+                    <td className="px-6 py-4">
+                      <span className="text-gray-500 text-xs border border-gray-200 px-2 py-1 rounded bg-white">
+                        {lead.origin || 'Desconhecida'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-gray-500">{formatDate(lead.created_at)}</td>
+                    <td className="px-6 py-4">
+                      {getStatusBadge(lead.status)}
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <button 
+                        onClick={() => setSelectedLead(lead)}
+                        className="text-[#1e3a5f] hover:underline font-medium text-sm"
+                      >
+                        Detalhes
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
 
@@ -131,7 +168,7 @@ const LeadsView = () => {
                   <h2 className="text-xl font-bold text-gray-900">{selectedLead.name}</h2>
                   {getStatusBadge(selectedLead.status)}
                 </div>
-                <p className="text-sm text-gray-500">{selectedLead.phone} • Captado em {selectedLead.date}</p>
+                <p className="text-sm text-gray-500">{selectedLead.phone} • Captado em {formatDate(selectedLead.created_at)}</p>
               </div>
               <button 
                 onClick={() => setSelectedLead(null)}
@@ -153,7 +190,7 @@ const LeadsView = () => {
                 </div>
                 
                 <p className="text-sm text-blue-800/80 leading-relaxed relative z-10">
-                  {selectedLead.aiSummary}
+                  {selectedLead.ai_summary || "A IA ainda não gerou um resumo para este lead ou o atendimento não foi finalizado."}
                 </p>
               </div>
 

@@ -1,9 +1,23 @@
-import { Save, Bot, MessageSquare, AlertTriangle, Key, Sliders, UploadCloud, FileArchive, Send, X } from "lucide-react";
-import { useState, useRef } from "react";
+import { Save, Bot, MessageSquare, AlertTriangle, Key, Sliders, UploadCloud, FileArchive, Send, X, Loader2 } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { supabase } from "@/lib/supabase";
+import { useToast } from "@/hooks/use-toast";
 
 const AiSettings = () => {
+  const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [settingsId, setSettingsId] = useState<string | null>(null);
+
+  // Database States
+  const [modelName, setModelName] = useState("gemini-1.5-flash");
+  const [apiKey, setApiKey] = useState("");
+  const [systemPrompt, setSystemPrompt] = useState("");
+  const [sacredRules, setSacredRules] = useState("");
   const [temperature, setTemperature] = useState(0.7);
   const [contextLimit, setContextLimit] = useState(5);
+  
+  // UI States
   const [isDragOver, setIsDragOver] = useState(false);
   const [skills, setSkills] = useState<{name: string, size: string}[]>([]);
   
@@ -14,6 +28,92 @@ const AiSettings = () => {
   ]);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    fetchSettings();
+  }, []);
+
+  const fetchSettings = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('ai_settings')
+        .select('*')
+        .limit(1)
+        .single();
+
+      if (error && error.code !== 'PGRST116') {
+        throw error;
+      }
+
+      if (data) {
+        setSettingsId(data.id);
+        setModelName(data.model_name || "gemini-1.5-flash");
+        setApiKey(data.api_key || "");
+        setSystemPrompt(data.system_prompt || "");
+        setSacredRules(data.sacred_rules || "");
+        setTemperature(Number(data.temperature) || 0.7);
+        setContextLimit(Number(data.context_limit) || 5);
+      }
+    } catch (error) {
+      console.error('Erro ao buscar configurações:', error);
+      toast({
+        title: "Erro de Conexão",
+        description: "Não foi possível carregar as configurações do banco de dados.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSaveAll = async () => {
+    setIsSaving(true);
+    try {
+      const payload = {
+        model_name: modelName,
+        api_key: apiKey,
+        system_prompt: systemPrompt,
+        sacred_rules: sacredRules,
+        temperature: temperature,
+        context_limit: contextLimit,
+        updated_at: new Date().toISOString()
+      };
+
+      let error;
+      if (settingsId) {
+        const { error: updateError } = await supabase
+          .from('ai_settings')
+          .update(payload)
+          .eq('id', settingsId);
+        error = updateError;
+      } else {
+        const { data, error: insertError } = await supabase
+          .from('ai_settings')
+          .insert([payload])
+          .select()
+          .single();
+        error = insertError;
+        if (data) setSettingsId(data.id);
+      }
+
+      if (error) throw error;
+
+      toast({
+        title: "Sucesso!",
+        description: "Configurações da IA foram salvas no Supabase.",
+        className: "bg-green-50 border-green-200 text-green-900"
+      });
+    } catch (error) {
+      console.error('Erro ao salvar:', error);
+      toast({
+        title: "Erro ao salvar",
+        description: "Verifique a conexão ou os logs do console.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -47,9 +147,8 @@ const AiSettings = () => {
     setChatHistory([...chatHistory, { role: 'user', text: chatMessage }]);
     setChatMessage("");
     
-    // Simulate AI response
     setTimeout(() => {
-      setChatHistory(prev => [...prev, { role: 'ai', text: 'Esta é uma resposta simulada do Sandbox. Salve as configurações para testar a resposta real conectada ao Supabase.' }]);
+      setChatHistory(prev => [...prev, { role: 'ai', text: 'Resposta simulada baseada nas novas regras! No futuro, isso consumirá a Edge Function conectada ao Supabase.' }]);
     }, 1000);
   };
 
@@ -57,8 +156,17 @@ const AiSettings = () => {
     setSkills(skills.filter((_, i) => i !== index));
   };
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-[60vh]">
+        <Loader2 className="w-8 h-8 text-[#1e3a5f] animate-spin" />
+        <span className="ml-3 text-gray-500 font-medium">Conectando ao Supabase...</span>
+      </div>
+    );
+  }
+
   return (
-    <div className="max-w-6xl mx-auto pb-12">
+    <div className="max-w-6xl mx-auto pb-12 animate-in fade-in duration-500">
       <div className="mb-8 flex justify-between items-end">
         <div>
           <h1 className="text-3xl font-bold font-serif text-gray-900 mb-2" style={{ fontFamily: "Playfair Display, serif" }}>
@@ -68,9 +176,13 @@ const AiSettings = () => {
             Ajuste o comportamento do assistente, insira regras sagradas e faça uploads de Skills.
           </p>
         </div>
-        <button className="bg-[#1e3a5f] hover:bg-[#152a45] text-white font-medium py-2.5 px-6 rounded-lg flex items-center gap-2 transition-colors shadow-sm">
-          <Save className="w-4 h-4" />
-          Salvar Tudo
+        <button 
+          onClick={handleSaveAll}
+          disabled={isSaving}
+          className="bg-[#1e3a5f] hover:bg-[#152a45] text-white font-medium py-2.5 px-6 rounded-lg flex items-center gap-2 transition-colors shadow-sm disabled:opacity-70"
+        >
+          {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+          {isSaving ? 'Salvando...' : 'Salvar Tudo'}
         </button>
       </div>
 
@@ -88,11 +200,15 @@ const AiSettings = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">Motor de IA (LLM)</label>
-                <select className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-[#1e3a5f]">
-                  <option>Gemini 1.5 Flash (Recomendado - Rápido)</option>
-                  <option>Gemini 1.5 Pro (Avançado)</option>
-                  <option>Claude 3 Haiku</option>
-                  <option>Claude 3.5 Sonnet</option>
+                <select 
+                  value={modelName}
+                  onChange={(e) => setModelName(e.target.value)}
+                  className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-[#1e3a5f]"
+                >
+                  <option value="gemini-1.5-flash">Gemini 1.5 Flash (Recomendado - Rápido)</option>
+                  <option value="gemini-1.5-pro">Gemini 1.5 Pro (Avançado)</option>
+                  <option value="claude-3-haiku">Claude 3 Haiku</option>
+                  <option value="claude-3-5-sonnet">Claude 3.5 Sonnet</option>
                 </select>
               </div>
               <div>
@@ -102,7 +218,9 @@ const AiSettings = () => {
                 </label>
                 <input 
                   type="password" 
-                  placeholder="sk-..." 
+                  value={apiKey}
+                  onChange={(e) => setApiKey(e.target.value)}
+                  placeholder="Deixe em branco para usar a chave padrão" 
                   className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-[#1e3a5f]"
                 />
               </div>
@@ -122,8 +240,10 @@ const AiSettings = () => {
                 <p className="text-xs text-gray-400 mb-2">Defina o tom de voz e como o assistente deve se portar com os clientes.</p>
                 <textarea 
                   rows={4}
+                  value={systemPrompt}
+                  onChange={(e) => setSystemPrompt(e.target.value)}
+                  placeholder="Você é o assistente virtual do Dr. André..."
                   className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-[#1e3a5f]"
-                  defaultValue="Você é o assistente virtual do Dr. André Andrade, especialista em Terceiro Setor. Responda sempre de forma acolhedora, polida e técnica, mas sem jargões complexos."
                 />
               </div>
 
@@ -135,8 +255,10 @@ const AiSettings = () => {
                 <p className="text-xs text-gray-400 mb-2">Regras rígidas que a IA nunca deve desobedecer.</p>
                 <textarea 
                   rows={3}
+                  value={sacredRules}
+                  onChange={(e) => setSacredRules(e.target.value)}
+                  placeholder="1. NUNCA forneça conselhos definitivos..."
                   className="w-full px-4 py-3 bg-red-50/30 border border-red-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-red-500"
-                  defaultValue="1. NUNCA forneça conselhos jurídicos definitivos, apenas orientações gerais.\n2. SEMPRE sugira agendar uma consulta formal no final de interações complexas."
                 />
               </div>
             </div>
@@ -152,7 +274,7 @@ const AiSettings = () => {
               <span className="text-xs font-medium px-2 py-1 bg-amber-100 text-amber-700 rounded">Escalabilidade</span>
             </div>
             <p className="text-sm text-gray-500 mb-4">
-              Arraste pacotes de Skills (.zip ou .json) para adicionar novas capacidades cognitivas ao agente (Ex: "gsd-ai-integration-phase").
+              Arraste pacotes de Skills (.zip ou .json) para adicionar novas capacidades cognitivas ao agente.
             </p>
             
             <div 
@@ -213,7 +335,7 @@ const AiSettings = () => {
                     {contextLimit} msgs
                   </span>
                 </div>
-                <p className="text-xs text-gray-400 mb-2">Quantas mensagens anteriores a IA deve lembrar. Limitar reduz o gasto de tokens drasticamente.</p>
+                <p className="text-xs text-gray-400 mb-2">Quantas mensagens anteriores a IA deve lembrar.</p>
                 <input 
                   type="range" 
                   min="1" max="20" step="1"
@@ -228,7 +350,7 @@ const AiSettings = () => {
                   <label className="text-sm font-medium text-gray-700">Temperatura (Criatividade)</label>
                   <span className="text-xs font-bold text-gray-600">{temperature.toFixed(1)}</span>
                 </div>
-                <p className="text-xs text-gray-400 mb-2">0 = Respostas literais e robóticas. 1 = Respostas muito criativas e abertas.</p>
+                <p className="text-xs text-gray-400 mb-2">0 = Respostas literais. 1 = Respostas criativas.</p>
                 <input 
                   type="range" 
                   min="0" max="1" step="0.1"
@@ -247,7 +369,7 @@ const AiSettings = () => {
                 <Bot className="w-4 h-4 text-[#1e3a5f]" />
                 Sandbox de Testes
               </h2>
-              <p className="text-xs text-gray-500 mt-0.5">Teste o prompt antes de publicar, sem gastar créditos no WhatsApp.</p>
+              <p className="text-xs text-gray-500 mt-0.5">Teste o prompt antes de publicar.</p>
             </div>
             
             <div className="flex-1 p-4 overflow-y-auto space-y-4 bg-gray-50/30">

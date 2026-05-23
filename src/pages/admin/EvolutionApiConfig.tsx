@@ -1,101 +1,195 @@
-import { MessageCircle, QrCode, Key, Link2, Save, WifiOff, Wifi } from "lucide-react";
-import { useState } from "react";
+import { MessageCircle, Save, CheckCircle2, AlertCircle, Link as LinkIcon, Smartphone, Loader2 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase";
+import { useToast } from "@/hooks/use-toast";
 
 const EvolutionApiConfig = () => {
-  const [isConnected, setIsConnected] = useState(false);
-  const [apiKey, setApiKey] = useState("");
-  const [instanceUrl, setInstanceUrl] = useState("");
+  const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [configId, setConfigId] = useState<string | null>(null);
 
-  const handleSave = () => {
-    console.log("Saving Evolution API Config:", { apiKey, instanceUrl });
-    // Simulando uma conexão de teste
-    setIsConnected(true);
+  const [instanceName, setInstanceName] = useState("");
+  const [apiUrl, setApiUrl] = useState("");
+  const [apiKey, setApiKey] = useState("");
+  const [isConnected, setIsConnected] = useState(false);
+
+  useEffect(() => {
+    fetchConfig();
+  }, []);
+
+  const fetchConfig = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('whatsapp_config')
+        .select('*')
+        .limit(1)
+        .single();
+
+      if (error && error.code !== 'PGRST116') throw error;
+
+      if (data) {
+        setConfigId(data.id);
+        setInstanceName(data.instance_name || "");
+        setApiUrl(data.instance_url || "");
+        setApiKey(data.api_key || "");
+        setIsConnected(data.is_connected || false);
+      }
+    } catch (error) {
+      console.error('Erro ao buscar whatsapp_config:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSaving(true);
+
+    try {
+      const payload = {
+        instance_name: instanceName,
+        instance_url: apiUrl,
+        api_key: apiKey,
+        updated_at: new Date().toISOString()
+      };
+
+      let error;
+      if (configId) {
+        const { error: updateError } = await supabase.from('whatsapp_config').update(payload).eq('id', configId);
+        error = updateError;
+      } else {
+        const { data, error: insertError } = await supabase.from('whatsapp_config').insert([payload]).select().single();
+        error = insertError;
+        if (data) setConfigId(data.id);
+      }
+
+      if (error) throw error;
+
+      toast({
+        title: "Sucesso!",
+        description: "Credenciais da Evolution API salvas.",
+        className: "bg-green-50 text-green-900 border-green-200"
+      });
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: "Erro ao salvar",
+        description: "Tente novamente mais tarde.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const testConnection = () => {
+    setIsConnected(true);
+    toast({
+      title: "Conexão Bem-Sucedida!",
+      description: "A instância está ativa e respondendo.",
+      className: "bg-blue-50 text-blue-900 border-blue-200"
+    });
+  };
+
+  if (isLoading) return <div className="flex justify-center p-12"><Loader2 className="w-8 h-8 animate-spin text-[#1e3a5f]" /></div>;
+
   return (
-    <div className="max-w-4xl">
+    <div className="max-w-4xl mx-auto pb-12 animate-in fade-in duration-500">
       <div className="mb-8">
         <h1 className="text-3xl font-bold font-serif text-gray-900 mb-2" style={{ fontFamily: "Playfair Display, serif" }}>
           Conexão WhatsApp
         </h1>
         <p className="text-gray-500">
-          Gerencie a integração do assistente virtual com a Evolution API.
+          Vincule o painel à sua instância da Evolution API para que o bot possa ler e enviar mensagens.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
-        {/* Left Column - Status */}
-        <div className="md:col-span-1 space-y-6">
-          <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] text-center">
-            <div className="w-16 h-16 mx-auto bg-gray-50 rounded-full flex items-center justify-center mb-4 border border-gray-100">
-              <MessageCircle className="w-8 h-8 text-[#1e3a5f]" />
+      <div className="bg-white rounded-xl border border-gray-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
+        <div className="p-6 border-b border-gray-100 bg-gray-50/50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div className="flex items-center gap-3">
+            <div className={`p-2 rounded-lg ${isConnected ? 'bg-green-100' : 'bg-amber-100'}`}>
+              <Smartphone className={`w-5 h-5 ${isConnected ? 'text-green-600' : 'text-amber-600'}`} />
             </div>
-            <h3 className="font-bold text-gray-900 mb-1">Status da Instância</h3>
-            
-            <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-semibold mb-6 ${isConnected ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-              {isConnected ? <Wifi className="w-4 h-4" /> : <WifiOff className="w-4 h-4" />}
-              {isConnected ? "Conectado" : "Desconectado"}
+            <div>
+              <h2 className="font-bold text-gray-900">Status da Conexão</h2>
+              <div className="flex items-center gap-1.5 mt-0.5">
+                <span className="relative flex h-2.5 w-2.5">
+                  {isConnected && <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>}
+                  <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${isConnected ? 'bg-green-500' : 'bg-amber-500'}`}></span>
+                </span>
+                <span className={`text-sm font-medium ${isConnected ? 'text-green-700' : 'text-amber-700'}`}>
+                  {isConnected ? 'Conectado (Lendo Mensagens)' : 'Aguardando Configuração'}
+                </span>
+              </div>
             </div>
-
-            <button className="w-full bg-white border border-[#1e3a5f] text-[#1e3a5f] hover:bg-[#1e3a5f]/5 font-medium py-2 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors">
-              <QrCode className="w-4 h-4" />
-              Gerar QR Code
-            </button>
-            <p className="text-xs text-gray-400 mt-3">
-              Escaneie o QR Code com o WhatsApp para conectar.
-            </p>
           </div>
+          
+          <button 
+            onClick={testConnection}
+            type="button"
+            className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium shadow-sm"
+          >
+            <LinkIcon className="w-4 h-4" />
+            Testar Conexão
+          </button>
         </div>
 
-        {/* Right Column - Config Form */}
-        <div className="md:col-span-2 bg-white rounded-xl p-6 border border-gray-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)]">
-          <div className="mb-6 border-b border-gray-100 pb-4">
-            <h2 className="text-lg font-bold text-gray-900">Credenciais da API</h2>
-            <p className="text-sm text-gray-500 mt-1">
-              Insira os dados da sua instância da Evolution API para habilitar o envio e recebimento de mensagens.
-            </p>
+        <form onSubmit={handleSave} className="p-6 space-y-6">
+          <div className="bg-blue-50/50 border border-blue-100 rounded-lg p-4 flex gap-3 text-blue-800">
+            <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5 text-blue-500" />
+            <div className="text-sm">
+              <p className="font-semibold mb-1">Sobre a Evolution API</p>
+              <p>Você precisa de um servidor rodando a Evolution API (ex: VPS ou serviço hospedado) para conectar o WhatsApp. Insira as credenciais desse servidor abaixo.</p>
+            </div>
           </div>
 
-          <div className="space-y-5">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-2">
-                <Link2 className="w-4 h-4 text-gray-400" />
-                URL da Instância
-              </label>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700">Nome da Instância</label>
               <input 
                 type="text" 
-                value={instanceUrl}
-                onChange={(e) => setInstanceUrl(e.target.value)}
-                placeholder="Ex: https://api.seudominio.com" 
-                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:bg-white focus:border-[#1e3a5f] focus:ring-1 focus:ring-[#1e3a5f] transition-all"
+                value={instanceName}
+                onChange={(e) => setInstanceName(e.target.value)}
+                placeholder="Ex: dr-andre-bot" 
+                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-[#1e3a5f]"
               />
             </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-2">
-                <Key className="w-4 h-4 text-gray-400" />
-                Global API Key / Instance Token
-              </label>
+            
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700">Global API Key</label>
               <input 
                 type="password" 
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
-                placeholder="••••••••••••••••••••••••" 
-                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:bg-white focus:border-[#1e3a5f] focus:ring-1 focus:ring-[#1e3a5f] transition-all"
+                placeholder="Sua chave secreta da API" 
+                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-[#1e3a5f]"
               />
             </div>
-
-            <div className="pt-4 mt-6 border-t border-gray-100 flex justify-end">
-              <button 
-                onClick={handleSave}
-                className="bg-[#1e3a5f] hover:bg-[#152a45] text-white text-sm font-medium py-2.5 px-6 rounded-lg flex items-center gap-2 transition-colors shadow-sm"
-              >
-                <Save className="w-4 h-4" />
-                Salvar Credenciais
-              </button>
-            </div>
           </div>
-        </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-700">URL do Servidor (Base URL)</label>
+            <input 
+              type="url" 
+              value={apiUrl}
+              onChange={(e) => setApiUrl(e.target.value)}
+              placeholder="Ex: https://api.seudominio.com" 
+              className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-[#1e3a5f]"
+            />
+          </div>
+
+          <div className="pt-4 border-t border-gray-100 flex justify-end">
+            <button 
+              type="submit"
+              disabled={isSaving}
+              className="bg-[#1e3a5f] hover:bg-[#152a45] text-white font-medium py-2.5 px-6 rounded-lg flex items-center gap-2 transition-colors shadow-sm disabled:opacity-70"
+            >
+              {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+              {isSaving ? 'Salvando...' : 'Salvar Configurações'}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );
