@@ -1,11 +1,24 @@
-import { Users, Search, Filter } from "lucide-react";
+import { Users, Search, Filter, X, Bot, Sparkles } from "lucide-react";
+import { useState } from "react";
 
 // Dados simulados (mock)
 const mockLeads = [
-  { id: 1, name: "Maria Silva", phone: "(11) 98765-4321", origin: "Chat Flutuante", date: "22/05/2026", status: "Novo" },
-  { id: 2, name: "Instituto Esperança", phone: "(16) 91234-5678", origin: "WhatsApp Link", date: "21/05/2026", status: "Em Atendimento" },
-  { id: 3, name: "João Pereira", phone: "(11) 99999-8888", origin: "Chat Flutuante", date: "20/05/2026", status: "Fechado" },
-  { id: 4, name: "Associação Bem Viver", phone: "(19) 97777-6666", origin: "Contato Direto", date: "18/05/2026", status: "Fechado" },
+  { 
+    id: 1, name: "Maria Silva", phone: "(11) 98765-4321", origin: "Chat Flutuante", date: "22/05/2026", status: "Novo",
+    aiSummary: "A cliente é presidente de uma associação de moradores e busca informações iniciais sobre como obter a certificação CEBAS. Ela já leu alguns artigos, mas tem dúvidas sobre a documentação exigida."
+  },
+  { 
+    id: 2, name: "Instituto Esperança", phone: "(16) 91234-5678", origin: "WhatsApp Link", date: "21/05/2026", status: "Em Atendimento",
+    aiSummary: "Representante legal (João) quer agendar reunião para revisar o estatuto da ONG, focando nas novas regras de imunidade tributária."
+  },
+  { 
+    id: 3, name: "João Pereira", phone: "(11) 99999-8888", origin: "Chat Flutuante", date: "20/05/2026", status: "Fechado",
+    aiSummary: "Dúvida simples sobre endereço do escritório. Resolvido pelo bot."
+  },
+  { 
+    id: 4, name: "Associação Bem Viver", phone: "(19) 97777-6666", origin: "Contato Direto", date: "18/05/2026", status: "Fechado",
+    aiSummary: "Buscou consultoria jurídica preventiva. Encaminhado para a equipe comercial."
+  },
 ];
 
 const getStatusBadge = (status: string) => {
@@ -22,8 +35,10 @@ const getStatusBadge = (status: string) => {
 };
 
 const LeadsView = () => {
+  const [selectedLead, setSelectedLead] = useState<typeof mockLeads[0] | null>(null);
+
   return (
-    <div className="max-w-6xl">
+    <div className="max-w-6xl mx-auto pb-12 relative">
       <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold font-serif text-gray-900 mb-2" style={{ fontFamily: "Playfair Display, serif" }}>
@@ -92,7 +107,10 @@ const LeadsView = () => {
                     {getStatusBadge(lead.status)}
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <button className="text-[#1e3a5f] hover:underline font-medium text-sm">
+                    <button 
+                      onClick={() => setSelectedLead(lead)}
+                      className="text-[#1e3a5f] hover:underline font-medium text-sm"
+                    >
                       Detalhes
                     </button>
                   </td>
@@ -101,8 +119,56 @@ const LeadsView = () => {
             </tbody>
           </table>
         </div>
-
       </div>
+
+      {/* Modal de Detalhes do Lead */}
+      {selectedLead && (
+        <div className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <div className="p-6 border-b border-gray-100 flex justify-between items-start">
+              <div>
+                <div className="flex items-center gap-3 mb-1">
+                  <h2 className="text-xl font-bold text-gray-900">{selectedLead.name}</h2>
+                  {getStatusBadge(selectedLead.status)}
+                </div>
+                <p className="text-sm text-gray-500">{selectedLead.phone} • Captado em {selectedLead.date}</p>
+              </div>
+              <button 
+                onClick={() => setSelectedLead(null)}
+                className="text-gray-400 hover:text-gray-600 transition-colors bg-gray-50 hover:bg-gray-100 p-2 rounded-full"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="p-6 bg-gray-50/50">
+              <div className="bg-blue-50 border border-blue-100 rounded-xl p-5 relative overflow-hidden shadow-sm">
+                <div className="absolute -right-4 -top-4 opacity-10">
+                  <Bot className="w-24 h-24 text-blue-500" />
+                </div>
+                
+                <div className="flex items-center gap-2 mb-3">
+                  <Sparkles className="w-4 h-4 text-blue-600" />
+                  <h3 className="text-sm font-bold text-blue-900">Resumo Gerado pela IA</h3>
+                </div>
+                
+                <p className="text-sm text-blue-800/80 leading-relaxed relative z-10">
+                  {selectedLead.aiSummary}
+                </p>
+              </div>
+
+              <div className="mt-6 flex gap-3">
+                <button className="flex-1 bg-green-600 hover:bg-green-700 text-white font-medium py-2.5 rounded-lg transition-colors text-sm shadow-sm">
+                  Abrir no WhatsApp
+                </button>
+                <button className="flex-1 bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 font-medium py-2.5 rounded-lg transition-colors text-sm shadow-sm">
+                  Ver Histórico Completo
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

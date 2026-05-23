@@ -1,9 +1,10 @@
 import { Link, Outlet, useLocation } from "react-router-dom";
-import { LayoutDashboard, MessageCircle, Bot, BookOpen, Users, LogOut, Menu } from "lucide-react";
+import { LayoutDashboard, MessageCircle, Bot, BookOpen, Users, LogOut, Menu, Calendar } from "lucide-react";
 import { useState } from "react";
 
 const sidebarLinks = [
   { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
+  { name: "Agenda e Horários", href: "/admin/agenda", icon: Calendar },
   { name: "Conexão WhatsApp", href: "/admin/whatsapp", icon: MessageCircle },
   { name: "Configuração de IA", href: "/admin/ai", icon: Bot },
   { name: "Base de Conhecimento", href: "/admin/knowledge", icon: BookOpen },

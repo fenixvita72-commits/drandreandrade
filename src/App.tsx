@@ -11,6 +11,7 @@ import LeadsView from "./pages/admin/LeadsView";
 import EvolutionApiConfig from "./pages/admin/EvolutionApiConfig";
 import KnowledgeBase from "./pages/admin/KnowledgeBase";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import AgendaView from "./pages/admin/AgendaView";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +32,7 @@ const App = () => (
             <Route path="leads" element={<LeadsView />} />
             <Route path="whatsapp" element={<EvolutionApiConfig />} />
             <Route path="knowledge" element={<KnowledgeBase />} />
+            <Route path="agenda" element={<AgendaView />} />
             <Route path="*" element={<div className="p-8 text-gray-500">Página em construção.</div>} />
           </Route>
 
