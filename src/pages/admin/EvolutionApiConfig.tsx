@@ -83,7 +83,7 @@ const EvolutionApiConfig = () => {
     }
   };
 
-  const testConnection = () => {
+  const testConnection = async () => {
     if (!apiUrl || !instanceName || !apiKey) {
       toast({
         title: "Campos Incompletos",
@@ -93,12 +93,35 @@ const EvolutionApiConfig = () => {
       return;
     }
 
-    setIsConnected(true);
-    toast({
-      title: "Conexão Bem-Sucedida!",
-      description: "A instância está ativa e respondendo.",
-      className: "bg-blue-50 text-blue-900 border-blue-200"
-    });
+    try {
+      // Tenta bater no endpoint da Evolution API para buscar o status da instância
+      const response = await fetch(`${apiUrl}/instance/connectionState/${instanceName}`, {
+        method: "GET",
+        headers: {
+          "apikey": apiKey,
+          "Content-Type": "application/json"
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error("A API rejeitou a conexão. Verifique suas credenciais.");
+      }
+
+      setIsConnected(true);
+      toast({
+        title: "Conexão Bem-Sucedida!",
+        description: "A instância está ativa e respondendo.",
+        className: "bg-blue-50 text-blue-900 border-blue-200"
+      });
+    } catch (error: any) {
+      console.error("Erro na conexão:", error);
+      setIsConnected(false);
+      toast({
+        title: "Falha na Conexão",
+        description: error.message || "Não foi possível conectar ao servidor. Verifique a URL e se o servidor permite acesso (CORS).",
+        variant: "destructive"
+      });
+    }
   };
 
   if (isLoading) return <div className="flex justify-center p-12"><Loader2 className="w-8 h-8 animate-spin text-[#1e3a5f]" /></div>;

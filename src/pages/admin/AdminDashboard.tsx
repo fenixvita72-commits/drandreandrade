@@ -1,4 +1,6 @@
 import { Users, MessageCircle, TrendingUp, Wifi, WifiOff, Zap } from "lucide-react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase";
 import {
   LineChart,
   Line,
@@ -47,10 +49,30 @@ const MetricCard = ({
 );
 
 const AdminDashboard = () => {
-  const isWhatsAppConnected = false;
+  const [isWhatsAppConnected, setIsWhatsAppConnected] = useState(false);
+
+  useEffect(() => {
+    checkWhatsAppStatus();
+  }, []);
+
+  const checkWhatsAppStatus = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('whatsapp_config')
+        .select('is_connected')
+        .limit(1)
+        .single();
+        
+      if (!error && data) {
+        setIsWhatsAppConnected(data.is_connected);
+      }
+    } catch (e) {
+      console.error("Erro ao verificar status do WhatsApp:", e);
+    }
+  };
 
   return (
-    <div className="max-w-6xl">
+    <div className="max-w-6xl animate-in fade-in duration-500">
       <div className="mb-8">
         <h1
           className="text-3xl font-bold font-serif text-gray-900 mb-2"
@@ -140,7 +162,7 @@ const AdminDashboard = () => {
           <div className="space-y-4 flex-1">
             {[
               { label: "Assistente Virtual", ok: true },
-              { label: "Evolution API (WhatsApp)", ok: false },
+              { label: "Evolution API (WhatsApp)", ok: isWhatsAppConnected },
               { label: "Base de Conhecimento", ok: true },
               { label: "Modelo de IA (LLM)", ok: true },
             ].map((item) => (
