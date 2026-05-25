@@ -36,9 +36,17 @@ const Login = () => {
       // Se sucesso, o onAuthStateChange no AuthContext vai atualizar isAuthenticated e redirecionar
     } catch (error: any) {
       console.error("Erro no login:", error);
+      
+      let errorMessage = "Credenciais inválidas. Verifique seu e-mail e senha.";
+      if (error.message.includes("Email not confirmed")) {
+        errorMessage = "Você precisa desativar a 'Confirmação de E-mail' no Supabase ou clicar no link de confirmação enviado para seu e-mail.";
+      } else if (error.message) {
+        errorMessage = error.message; // Mostra o erro exato que o banco de dados retornou
+      }
+
       toast({
         title: "Acesso Negado",
-        description: "Credenciais inválidas. Verifique seu e-mail e senha.",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
