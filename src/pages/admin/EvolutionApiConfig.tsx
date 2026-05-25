@@ -84,6 +84,15 @@ const EvolutionApiConfig = () => {
   };
 
   const testConnection = () => {
+    if (!apiUrl || !instanceName || !apiKey) {
+      toast({
+        title: "Campos Incompletos",
+        description: "Preencha a URL, Nome da Instância e a Global API Key para testar a conexão.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setIsConnected(true);
     toast({
       title: "Conexão Bem-Sucedida!",

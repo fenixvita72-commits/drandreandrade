@@ -1,7 +1,14 @@
 import { Users, Search, Filter, X, Bot, Sparkles, Loader2 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 type Lead = {
   id: string;
@@ -31,6 +38,9 @@ const LeadsView = () => {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
+  
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("Todos");
 
   useEffect(() => {
     fetchLeads();
@@ -61,6 +71,17 @@ const LeadsView = () => {
     return new Date(isoString).toLocaleDateString('pt-BR');
   };
 
+  const filteredLeads = useMemo(() => {
+    return leads.filter((lead) => {
+      const matchesSearch = lead.name?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                            lead.phone?.includes(searchQuery);
+      
+      const matchesStatus = statusFilter === "Todos" || lead.status === statusFilter;
+
+      return matchesSearch && matchesStatus;
+    });
+  }, [leads, searchQuery, statusFilter]);
+
   return (
     <div className="max-w-6xl mx-auto pb-12 relative animate-in fade-in duration-500">
       <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
@@ -74,10 +95,22 @@ const LeadsView = () => {
         </div>
         
         <div className="flex gap-2">
-          <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium shadow-sm">
-            <Filter className="w-4 h-4" />
-            Filtrar
-          </button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium shadow-sm cursor-pointer outline-none focus:ring-2 focus:ring-[#1e3a5f]/20">
+                <Filter className="w-4 h-4" />
+                {statusFilter === "Todos" ? "Filtrar por Status" : `Filtro: ${statusFilter}`}
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56 bg-white z-50">
+              <DropdownMenuRadioGroup value={statusFilter} onValueChange={setStatusFilter}>
+                <DropdownMenuRadioItem value="Todos" className="cursor-pointer">Todos os Status</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="Novo" className="cursor-pointer">Novos</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="Em Atendimento" className="cursor-pointer">Em Atendimento</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="Fechado" className="cursor-pointer">Fechados</DropdownMenuRadioItem>
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
 
@@ -89,12 +122,14 @@ const LeadsView = () => {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input 
               type="text" 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Buscar por nome ou telefone..." 
               className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-[#1e3a5f] focus:border-[#1e3a5f] transition-all"
             />
           </div>
           <div className="text-sm text-gray-500 hidden sm:block">
-            Total: <span className="font-semibold text-gray-900">{leads.length}</span> leads
+            Mostrando <span className="font-semibold text-gray-900">{filteredLeads.length}</span> leads
           </div>
         </div>
 
@@ -105,11 +140,16 @@ const LeadsView = () => {
               <Loader2 className="w-8 h-8 animate-spin mb-4 text-[#1e3a5f]" />
               <p>Carregando leads do Supabase...</p>
             </div>
-          ) : leads.length === 0 ? (
+          ) : filteredLeads.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-[300px] text-gray-400">
               <Users className="w-12 h-12 mb-4 opacity-20" />
-              <p>Nenhum lead encontrado no banco de dados.</p>
-              <p className="text-sm mt-1">Os novos leads captados pelo bot aparecerão aqui.</p>
+              <p>Nenhum lead encontrado com esses filtros.</p>
+              <button 
+                onClick={() => { setSearchQuery(""); setStatusFilter("Todos"); }}
+                className="text-[#1e3a5f] text-sm mt-2 hover:underline"
+              >
+                Limpar filtros
+              </button>
             </div>
           ) : (
             <table className="w-full text-left text-sm text-gray-600">
@@ -124,7 +164,7 @@ const LeadsView = () => {
                 </tr>
               </thead>
               <tbody>
-                {leads.map((lead) => (
+                {filteredLeads.map((lead) => (
                   <tr key={lead.id} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
                     <td className="px-6 py-4 font-medium text-gray-900 flex items-center gap-3">
                       <div className="w-8 h-8 rounded-full bg-[#1e3a5f]/10 flex items-center justify-center flex-shrink-0">
@@ -145,7 +185,7 @@ const LeadsView = () => {
                     <td className="px-6 py-4 text-right">
                       <button 
                         onClick={() => setSelectedLead(lead)}
-                        className="text-[#1e3a5f] hover:underline font-medium text-sm"
+                        className="text-[#1e3a5f] hover:underline font-medium text-sm cursor-pointer"
                       >
                         Detalhes
                       </button>
@@ -172,7 +212,7 @@ const LeadsView = () => {
               </div>
               <button 
                 onClick={() => setSelectedLead(null)}
-                className="text-gray-400 hover:text-gray-600 transition-colors bg-gray-50 hover:bg-gray-100 p-2 rounded-full"
+                className="text-gray-400 hover:text-gray-600 transition-colors bg-gray-50 hover:bg-gray-100 p-2 rounded-full cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -195,10 +235,10 @@ const LeadsView = () => {
               </div>
 
               <div className="mt-6 flex gap-3">
-                <button className="flex-1 bg-green-600 hover:bg-green-700 text-white font-medium py-2.5 rounded-lg transition-colors text-sm shadow-sm">
+                <button className="flex-1 bg-green-600 hover:bg-green-700 text-white font-medium py-2.5 rounded-lg transition-colors text-sm shadow-sm cursor-pointer">
                   Abrir no WhatsApp
                 </button>
-                <button className="flex-1 bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 font-medium py-2.5 rounded-lg transition-colors text-sm shadow-sm">
+                <button className="flex-1 bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 font-medium py-2.5 rounded-lg transition-colors text-sm shadow-sm cursor-pointer">
                   Ver Histórico Completo
                 </button>
               </div>
