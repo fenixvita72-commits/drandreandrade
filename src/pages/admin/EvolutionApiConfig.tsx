@@ -93,6 +93,15 @@ const EvolutionApiConfig = () => {
       return;
     }
 
+    if (!apiUrl.startsWith('http://') && !apiUrl.startsWith('https://')) {
+      toast({
+        title: "URL Inválida",
+        description: "A URL do servidor deve começar com http:// ou https://",
+        variant: "destructive"
+      });
+      return;
+    }
+
     try {
       // Tenta bater no endpoint da Evolution API para buscar o status da instância
       const response = await fetch(`${apiUrl}/instance/connectionState/${instanceName}`, {
@@ -102,6 +111,11 @@ const EvolutionApiConfig = () => {
           "Content-Type": "application/json"
         }
       });
+
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("text/html")) {
+        throw new Error("O link informado não é de uma API válida (retornou um site HTML). Verifique a URL Base.");
+      }
 
       if (!response.ok) {
         throw new Error("A API rejeitou a conexão. Verifique suas credenciais.");

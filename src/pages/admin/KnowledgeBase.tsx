@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { BookOpen, PlusCircle, ToggleLeft, ToggleRight, FileText, Trash2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const initialDocs = [
   { id: 1, name: "Lei_do_CEBAS.pdf", type: "PDF", size: "412 KB", active: true },
@@ -25,6 +26,7 @@ const getTypeBadge = (type: string) => {
 
 const KnowledgeBase = () => {
   const [docs, setDocs] = useState<Doc[]>(initialDocs);
+  const { toast } = useToast();
 
   const toggleDoc = (id: number) => {
     setDocs(docs.map(doc => doc.id === id ? { ...doc, active: !doc.active } : doc));
@@ -32,6 +34,24 @@ const KnowledgeBase = () => {
 
   const removeDoc = (id: number) => {
     setDocs(docs.filter(doc => doc.id !== id));
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const newDoc = {
+        id: Date.now(),
+        name: file.name,
+        type: file.name.split('.').pop()?.toUpperCase() || 'PDF',
+        size: `${(file.size / 1024).toFixed(0)} KB`,
+        active: true
+      };
+      setDocs([newDoc, ...docs]);
+      toast({
+        title: "Upload Concluído!",
+        description: `${file.name} foi adicionado à base de conhecimento.`,
+      });
+    }
   };
 
   return (
@@ -45,10 +65,11 @@ const KnowledgeBase = () => {
             Gerencie os documentos e skills utilizados pelo assistente na geração de respostas (RAG).
           </p>
         </div>
-        <button className="flex items-center gap-2 bg-[#1e3a5f] hover:bg-[#152a45] text-white text-sm font-medium py-2.5 px-5 rounded-lg transition-colors shadow-sm flex-shrink-0">
+        <label className="flex items-center gap-2 bg-[#1e3a5f] hover:bg-[#152a45] text-white text-sm font-medium py-2.5 px-5 rounded-lg transition-colors shadow-sm flex-shrink-0 cursor-pointer">
           <PlusCircle className="w-4 h-4" />
           Adicionar Documento
-        </button>
+          <input type="file" className="hidden" accept=".pdf,.docx,.txt" onChange={handleFileUpload} />
+        </label>
       </div>
 
       <div className="bg-white rounded-xl border border-gray-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
